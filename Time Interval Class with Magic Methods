@@ -1,0 +1,43 @@
+# In this exercise I create a time interval class for objects that will hold time values (h,m,s). I then define magic methods in the class definition to allow the times to be added/ subtracted and/or multiplied. To deal with cases where a non time interval object is used for an operation, I created a custom exception. 
+
+class TIObjectException(Exception): # Dealing with non time interval objects in an operation.
+    def __init__(self,message):
+        self.message = message
+    def __str__(self):    
+        return(f"One of the objects that you are trying to {self.message} is not a TimeInterval object")
+
+class TimeInterval:
+    def __init__(self, hours=0, minutes=0, seconds=0):
+        if not all(isinstance(i, int) for i in [hours, minutes, seconds]): # generator used to check whether h,m,s are ints.
+            raise TypeError("Hours, minutes, and seconds must be integers")
+        
+        # Time provided (h,m,s) transformed into seconds for simpler operations
+        self.ts = (hours * 3600) + (minutes * 60) + seconds
+
+    def __add__(self, other):
+        if not isinstance(other, TimeInterval): # ensure the 'other' object is a TimeInterval object
+            raise TIObjectException('add')
+        return TimeInterval(seconds=self.ts + other.ts) # create another TimeInterval object that stores the sum result
+
+    def __sub__(self, other):
+        if not isinstance(other, TimeInterval):
+            return TIObjectException('substract')
+        return TimeInterval(seconds=self.ts - other.ts)
+
+    def __mul__(self, factor):
+        if not isinstance(factor, int):
+            raise TypeError("Multiplication factor must be an integer")
+        return TimeInterval(seconds=self.ts * factor)
+
+    def __str__(self):
+        h, remainder = divmod(self.ts, 3600) #Here I use DivMod to transform ts (total seconds) to hours and minutes (and remaining seconds).
+        m, s = divmod(remainder, 60)
+        return f"{h:02}:{m:02}:{s:02}"  # Ensuring two-digit formatting
+
+# Examples
+time1 = TimeInterval(10, 10, 10)
+time2 = TimeInterval(20, 20, 20)
+
+print(time1 + time2)  # 30:30:30
+print(time1 - time2)  # -10:10:10 (negative values are allowed)
+print(time1 * 2)      # 20:20:20
