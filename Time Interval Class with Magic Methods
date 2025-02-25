@@ -1,4 +1,7 @@
-# In this exercise I create a time interval class for objects that will hold time values (h,m,s). I then define magic methods in the class definition to allow the times to be added/ subtracted and/or multiplied. To deal with cases where a non time interval object is used for an operation, I created a custom exception. 
+"""
+In this exercise I create a time interval class for objects that will hold time values (h,m,s). I then define magic methods in the class definition to allow the times to be added/ subtracted and/or multiplied. 
+To deal with cases where a non time interval object is used for an operation, I created a custom exception. 
+"""
 
 class TIObjectException(Exception): # Dealing with non time interval objects in an operation.
     def __init__(self,message):
