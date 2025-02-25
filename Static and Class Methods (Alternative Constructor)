@@ -1,0 +1,43 @@
+"""
+In this exercise I create a 'Luxury watch' class which contains instance and class attributes as well as instance, class and static methods. I use a class attribute to store the number of watches created, and a class method to access and return the number. 
+I also use a class method as an alternative constructor which allows for additional features for the watch e.g. engraving. I use a static method to validate the engraving text.
+"""
+
+class LuxuryWatch:
+    watches_created = 0  
+
+    def __init__(self):
+        self.engraving = ""
+        LuxuryWatch.watches_created += 1  # Increment count when a new watch is created
+
+    @classmethod
+    def get_number_of_watches_created(cls):
+        return f"There have been {cls.watches_created} watches created." # return number of watches created
+
+    @staticmethod
+    def validate_engraving(engraving_text): #Defining the checks for the text to engrave
+
+        if len(engraving_text) > 40:
+            raise ValueError("Engraving text must be 40 characters or fewer, including spaces.")
+
+        if not engraving_text.replace(" ", "").isalnum(): 
+            raise ValueError("Engraving must contain only letters and numbers.")
+
+        return True  # Valid engraving
+
+    @classmethod
+    def alt_constructor(cls, engraving_text): #Alternative constructor that allows engraving
+        cls.validate_engraving(engraving_text)  #Checking the engraving text
+        print(f"Engraving confirmed: '{engraving_text}'")
+
+        new_watch = cls()  
+        new_watch.engraving = engraving_text  # Apply engraving
+
+        return new_watch  
+
+# Examples
+watch1 = LuxuryWatch()
+print(LuxuryWatch.get_number_of_watches_created()) #There have been 1 watches created.
+
+watch2 = LuxuryWatch.alt_constructor("Engrave THIS")
+print(LuxuryWatch.get_number_of_watches_created()) #There have been 2 watches created
