@@ -1,0 +1,86 @@
+"""
+In this exercise, I create an abstract Scanner and Printer class using the abc module to enforce method implementation in sub classes. I then define multiple multi function device (MFD) classes that inherit from both abstract classes as well as implement scanning, printing, and device status retrieval features. 
+I 'prepare' common attributes in a Base MFD class. Additionally, I introduce a print history feature and extend functionality in specific models, such as adding a fax feature in one subclass.  
+"""
+
+import abc
+
+# Abstract Scanner Class
+class Scanner(abc.ABC):
+    @abc.abstractmethod
+    def scan_doc(self):
+        pass
+
+    @abc.abstractmethod
+    def get_scanner_status(self):
+        pass
+
+# Abstract Printer Class
+class Printer(abc.ABC):
+    @abc.abstractmethod
+    def print_document(self, doc_name):
+        pass
+
+    @abc.abstractmethod
+    def get_printer_status(self):
+        pass
+
+
+# Base Multi-Function Device (MFD) Class
+class MultiFunctionDevice(Scanner, Printer):
+    def __init__(self, scanner_res, scanner_serial, printer_res, printer_serial):
+        self.scanner_resolution = scanner_res
+        self.scanner_serial = scanner_serial
+        self.printer_resolution = printer_res
+        self.printer_serial = printer_serial
+        self.print_history = []  # Common print history attribute for all models
+
+    def scan_doc(self):
+        return "Scanned!"
+
+    def get_scanner_status(self):
+        return f"Scanner - Resolution: {self.scanner_resolution}, Serial: {self.scanner_serial}"
+
+    def get_printer_status(self):
+        return f"Printer - Resolution: {self.printer_resolution}, Serial: {self.printer_serial}"
+
+    def print_document(self, doc_name="Untitled"):
+        self.print_history.append(doc_name)
+        return f"Printed: {doc_name}"
+
+    def print_hist(self):
+        return "Print History: " + (", ".join(self.print_history) if self.print_history else "No prints yet.")
+
+#Different models below, with different values for commonn characteristics
+# MDF1 Model
+class MDF1(MultiFunctionDevice):
+    def __init__(self):
+        super().__init__(scanner_res=800, scanner_serial=123, printer_res=700, printer_serial=456)
+
+# MDF2 Model
+class MDF2(MultiFunctionDevice):
+    def __init__(self):
+        super().__init__(scanner_res=1200, scanner_serial=321, printer_res=1100, printer_serial=654)
+
+# MDF3 Model (With Fax Feature)
+class MDF3(MultiFunctionDevice):
+    def __init__(self):
+        super().__init__(scanner_res=1600, scanner_serial="ABC", printer_res=1500, printer_serial="DEF")
+
+    def fax(self):
+        return "Faxed!"
+
+# Examples
+T1 = MDF1()
+T2 = MDF2()
+T3 = MDF3()
+
+print(T2.print_document("docx1")) #Printed!
+print(T2.print_document("docx2")) #Printed!
+print(T3.print_document("pdf1"))
+print(T3.print_document("pdf2"))
+
+print(T2.print_hist()) #Print History: docx1, docx2
+print(T3.print_hist()) #Print History: pdf1, pdf2
+
+print(T3.fax())  #Faxed!
